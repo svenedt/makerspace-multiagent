@@ -1,0 +1,39 @@
+name: Lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install Python linter
+        run: pip install black
+      - name: Lint Python code
+        run: |
+          if compgen -G "**/*.py" > /dev/null; then
+            black --check .
+          else
+            echo "No Python files to lint."
+          fi
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install JS linter
+        run: npm install -g prettier
+      - name: Lint JS code
+        run: |
+          if compgen -G "**/*.js" > /dev/null; then
+            prettier --check "**/*.js"
+          else
+            echo "No JavaScript files to lint."
+          fi 
